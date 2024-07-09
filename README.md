@@ -1,5 +1,3 @@
----
-
 **Unveiling Mamaluv: A Journey into Creepy Stories and Cool Facts**
 
 In the dim glow of a laptop screen, amidst the eerie whispers of old tales, Mamaluv found herself captivated by the allure of creepy stories and the thrill of uncovering cool facts. Born out of a curiosity that bordered on the macabre yet tinged with a fascination for the extraordinary, Mamaluv embarked on a journey into the realms of the bizarre and the fascinating.
