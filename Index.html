@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Particle Simulation</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+        }
+        canvas {
+            border: 1px solid #fff;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="simulationCanvas"></canvas>
+    <script>
+        class Particle {
+            constructor(type, charge, x, y) {
+                this.type = type;
+                this.charge = charge;
+                this.x = x;
+                this.y = y;
+                this.vx = Math.random() * 2 - 1;
+                this.vy = Math.random() * 2 - 1;
+                this.radius = 5;
+            }
+
+            updatePosition() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Bounce off walls
+                if (this.x < this.radius || this.x > canvas.width - this.radius) {
+                    this.vx *= -1;
+                }
+                if (this.y < this.radius || this.y > canvas.height - this.radius) {
+                    this.vy *= -1;
+                }
+            }
+
+            render(ctx) {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+                ctx.fillStyle = this.type === 'proton' ? 'red' : 'blue';
+                ctx.fill();
+            }
+        }
+
+        class Matrix {
+            constructor(configuration, x, y) {
+                this.configuration = configuration;
+                this.charge = 100;
+                this.x = x;
+                this.y = y;
+                this.radius = 10;
+            }
+
+            grow() {
+                this.charge += 10;
+            }
+
+            decay() {
+                this.charge -= 5;
+                if (this.charge <= 0) {
+                    this.break();
+                }
+            }
+
+            break() {
+                // Logic for matrix breaking
+            }
+
+            render(ctx) {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+                ctx.fillStyle = 'green';
+                ctx.fill();
+            }
+        }
+
+        function initSimulation() {
+            const particles = [];
+            for (let i = 0; i < 10; i++) {
+                particles.push(new Particle('proton', 1, Math.random() * canvas.width, Math.random() * canvas.height));
+                particles.push(new Particle('neutron', 0, Math.random() * canvas.width, Math.random() * canvas.height));
+            }
+            return particles;
+        }
+
+        function checkStableConfiguration(particles) {
+            // Placeholder for checking stable configurations
+            // If found, create a matrix
+            if (particles.length >= 10) {
+                const x = particles.reduce((sum, p) => sum + p.x, 0) / particles.length;
+                const y = particles.reduce((sum, p) => sum + p.y, 0) / particles.length;
+                const configuration = particles.map(p => ({ type: p.type, x: p.x, y: p.y }));
+                return new Matrix(configuration, x, y);
+            }
+            return null;
+        }
+
+        function updateSimulation(particles, matrices) {
+            particles.forEach(p => p.updatePosition());
+
+            const newMatrix = checkStableConfiguration(particles);
+            if (newMatrix) {
+                matrices.push(newMatrix);
+            }
+        }
+
+        function renderSimulation(ctx, particles, matrices) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => p.render(ctx));
+            matrices.forEach(m => m.render(ctx));
+        }
+
+        function mainLoop() {
+            updateSimulation(particles, matrices);
+            renderSimulation(ctx, particles, matrices);
+            requestAnimationFrame(mainLoop);
+        }
+
+        const canvas = document.getElementById('simulationCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = initSimulation();
+        const matrices = [];
+
+        mainLoop();
+    </script>
+</body>
+</html>
